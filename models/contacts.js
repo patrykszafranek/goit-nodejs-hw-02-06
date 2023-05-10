@@ -131,7 +131,6 @@ const favorite = async (req, res, next) => {
     }
   } catch (e) {
     res.status(404).json({ message: "Not found" });
-    next(e);
   }
 };
 
