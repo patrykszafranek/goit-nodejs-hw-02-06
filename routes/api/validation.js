@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-  listContacts,
+  getAllContacts,
   getContactById,
   addContact,
   removeContact,
@@ -17,7 +17,7 @@ const contactSchema = Joi.object({
 
 router.get("/", async (req, res, next) => {
   try {
-    const contacts = await listContacts();
+    const contacts = await getAllContacts();
     res.json(contacts);
   } catch (error) {
     next(error);
