@@ -1,4 +1,4 @@
-const Contact = require('../model/contact');
+const Contact = require("../model/contact");
 
 const listContacts = async (userId, query) => {
   const { sortBy, sortByDesc, filter, limit = 5, offset = 0 } = query;
@@ -11,10 +11,10 @@ const listContacts = async (userId, query) => {
       ...(sortBy ? { [`${sortBy}`]: 1 } : {}), // { name: 1 }
       ...(sortByDesc ? { [`${sortByDesc}`]: -1 } : {}),
     },
-    select: filter ? filter.split('|').join(' ') : '',
+    select: filter ? filter.split("|").join(" ") : "",
     populate: {
-      path: 'owner',
-      select: 'name email gender createdAt updatedAt',
+      path: "owner",
+      select: "name email gender createdAt updatedAt",
     },
   });
   const { docs: contacts } = results;
@@ -27,27 +27,27 @@ const getContactById = async (contactId, userId) => {
     _id: contactId,
     owner: userId,
   }).populate({
-    path: 'owner',
-    select: 'name email gender createdAt updatedAt',
+    path: "owner",
+    select: "name email gender createdAt updatedAt",
   });
   return result;
 };
 
-const removeContact = async contactId => {
+const removeContact = async (contactId) => {
   const result = await Contact.findByIdAndRemove({ _id: contactId });
   return result;
 };
 
-const addContact = async body => {
+const addContact = async (body) => {
   const result = await Contact.create(body);
   return result;
 };
 
 const updateContact = async (contactId, body) => {
   const result = await Contact.findByIdAndUpdate(
-      { _id: contactId },
-      { ...body },
-      { new: true },
+    { _id: contactId },
+    { ...body },
+    { new: true }
   );
   return result;
 };
