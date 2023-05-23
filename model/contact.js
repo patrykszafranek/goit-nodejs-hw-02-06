@@ -1,60 +1,59 @@
-const { Schema, model, SchemaTypes } = require('mongoose');
-const { ValidInfoContact } = require('../config/constant');
-const mongoosePaginate = require('mongoose-paginate-v2');
+const { Schema, model, SchemaTypes } = require("mongoose");
+const { ValidateLengthContactName } = require("../config/constants");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const contactSchema = new Schema(
-    {
-        name: {
-            type: String,
-            required: [true, 'Name is required'],
-        },
-        age: {
-            type: Number,
-            min: ValidInfoContact.MIN_AGE,
-            max: ValidInfoContact.MAX_AGE,
-        },
-        email: {
-            type: String,
-            required: [true, 'Email for contact is required'],
-        },
-        favorite: {
-            type: Boolean,
-            default: false,
-            required: true,
-        },
-        owner: {
-            type: SchemaTypes.ObjectId,
-            ref: 'user',
-        },
+  {
+    name: {
+      type: String,
+      minLength: ValidateLengthContactName.MIN_LENGTH_NAME,
+      maxLength: ValidateLengthContactName.MAX_LENGTH_NAME,
+      required: [true, "Name for contact i require"],
     },
-    {
-        versionKey: false,
-        timestamps: true,
-        toJSON: {
-            virtuals: true,
-            transform: function (doc, ret) {
-                delete ret._id;
-                return ret;
-            },
-        },
-        toObject: { virtuals: true },
+    surname: {
+      type: String,
+      minLength: ValidateLengthContactName.MIN_LENGTH_NAME,
+      maxLength: ValidateLengthContactName.MAX_LENGTH_NAME,
+      required: [true, "Surname for contact is require"],
     },
+    email: {
+      type: String,
+      required: [true, "Email for contact is require"],
+      unique: true,
+    },
+    phone: {
+      type: String,
+      required: [true, "Phone for contact is require"],
+      unique: true,
+    },
+    favorite: { type: Boolean, default: false },
+    owner: {
+      type: SchemaTypes.ObjectId,
+      ref: "user",
+    },
+  },
+  {
+    versionKey: false,
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform: function (doc, ret) {
+        delete ret._id;
+        return ret;
+      },
+    },
+    toObject: { virtuals: true },
+  }
 );
 
-contactSchema.virtual('status').get(function () {
-    if (this.age >= 60) {
-        return 'old';
-    }
-    return 'young';
-});
-
-contactSchema.path('name').validate(function (value) {
-    const re = /[A-Z]\w+/;
-    return re.test(String(value));
+contactSchema.virtual("fullname").get(function () {
+  return `${this.name} ${this.surname}`;
 });
 
 contactSchema.plugin(mongoosePaginate);
 
-const Contact = model('contact', contactSchema);
+const Contact = model("Contact", contactSchema);
 
-module.exports = Contact;
+module.exports = {
+  Contact,
+};

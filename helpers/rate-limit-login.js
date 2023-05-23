@@ -1,16 +1,16 @@
-const rateLimit = require('express-rate-limit');
-const { HttpCode } = require('../config/constant');
+const rateLimit = require("express-rate-limit");
+const { HttpCode, Limit } = require("../config/constants");
 
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 3,
-    handler: (req, res, next) => {
-        return res.status(HttpCode.TOO_MANY_REQUESTS).json({
-            status: 'error',
-            code: HttpCode.TOO_MANY_REQUESTS,
-            message: 'Too many login attempts',
-        });
-    },
+  windowMs: Limit.WINDOW_MS,
+  max: Limit.MAX_LIMITER,
+  handler: (req, res, next) => {
+    return res.status(HttpCode.TOO_MANY_REQUESTS).json({
+      status: "error",
+      code: HttpCode.TOO_MANY_REQUESTS,
+      message: "Too Many Requests",
+    });
+  },
 });
 
 module.exports = limiter;

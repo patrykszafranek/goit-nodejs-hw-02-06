@@ -1,12 +1,16 @@
-const app = require('../app');
-const db = require('../config/db');
+const app = require("../app");
+const db = require("../config/db");
+require("dotenv").config();
+const UPLOAD_DIR = process.env.UPLOAD_DIR;
+const mkdirp = require("mkdirp");
 
 const PORT = process.env.PORT || 3000;
 
 db.then(() => {
-  app.listen(PORT, () => {
+  app.listen(PORT, async () => {
+    await mkdirp(UPLOAD_DIR);
     console.log(`Server running. Use our API on port: ${PORT}`);
   });
-}).catch(err => {
+}).catch((err) => {
   console.log(`Server not run. Error: ${err.message}`);
 });
