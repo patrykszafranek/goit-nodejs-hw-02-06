@@ -1,41 +1,49 @@
 const express = require('express');
 const router = express.Router();
 const {
-  getContact,
   getContacts,
-  removeContact,
-  saveContact,
+  getContact,
+  addContact,
   updateContact,
-  updateStatusFavoriteContact,
-} = require('../../controllers/contact');
+  updateStatusContact,
+  deleteContact,
+} = require("../../controllers/contact");
 const {
   validateContact,
+  validateUpdateContact,
   validateStatusContact,
   validateId,
-} = require('./validation');
+} = require("./validation");
+
 const guard = require('../../helpers/guard');
-const wrapError = require('../../helpers/errorHandler');
 
-router.get('/', guard, wrapError(getContacts));
+router.get('/', guard, getContacts);
 
-router.get('/:id', guard, validateId, wrapError(getContact));
+router.get('/:id', guard, validateId, getContact);
 
-router.post('/', guard, validateContact, wrapError(saveContact));
+router.post('/', guard, validateContact, addContact);
 
-router.delete('/:id', guard, validateId, wrapError(removeContact));
+router.delete('/:id', guard, validateId, deleteContact);
 
 router.put(
     '/:id',
     guard,
     [(validateId, validateContact)],
-    wrapError(updateContact),
+    updateContact
 );
 
 router.patch(
     '/:id/vaccinated/',
     guard,
     [(validateId, validateStatusContact)],
-    wrapError(updateStatusFavoriteContact),
+    updateStatusContact
+);
+
+router.patch(
+    "/:contactId",
+    guard,
+    [(validateId, validateUpdateContact)],
+    updateContact
 );
 
 module.exports = router;
